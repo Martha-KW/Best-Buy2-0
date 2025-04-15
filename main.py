@@ -1,5 +1,5 @@
 import store
-import products
+from  products import Product, NonStockedProduct, LimitedProduct
 
 
 def list_products(store):
@@ -9,9 +9,8 @@ def list_products(store):
     products = store.get_all_products()
     if products:
         for idx, product in enumerate(products, 1):
-            print(
-                f"{idx}. {product.name}, Price: ${product.price},"
-                f" Quantity: {product.get_quantity()}")
+            print(f"{idx}. {product.show()}")
+
     else:
         print("No active products in the store.")
     print("------")
@@ -39,8 +38,7 @@ def make_order(store):
         return True
 
     for idx, product in enumerate(products, start=1):
-        print(f"{idx}. {product.name}, Price: ${product.price},"
-              f" Quantity: {product.get_quantity()}")
+        print(f"{idx}. {product.show()}")
     print("------")
 
     order_items = []
@@ -66,9 +64,12 @@ def make_order(store):
             continue
 
         amount = int(amount)
-        if selected_product.get_quantity() < amount:
-            print("Not enough stock available.")
-            continue
+
+        # skip checking the stock for NonStockedProduct
+        if not isinstance(selected_product, NonStockedProduct):
+            if selected_product.get_quantity() < amount:
+                print("Not enough stock available.")
+                continue
 
         order_items.append((selected_product, amount))
         print("Product added to list!")
@@ -127,9 +128,11 @@ def main():
     """Initializes the Best Buy store and starts the CLI."""
     # Setup initial stock of inventory
     product_list = [
-        products.Product("MacBook Air M2", price=1450, quantity=100),
-        products.Product("Bose QuietComfort Earbuds", price=250, quantity=500),
-        products.Product("Google Pixel 7", price=500, quantity=250)
+        Product("MacBook Air M2", price=1450, quantity=100),
+        Product("Bose QuietComfort Earbuds", price=250, quantity=500),
+        Product("Google Pixel 7", price=500, quantity=250),
+        NonStockedProduct("Windows License", price=125),
+        LimitedProduct("Shipping", price=10, quantity=250, maximum=1)
     ]
     best_buy = store.Store(product_list)
     start(best_buy)

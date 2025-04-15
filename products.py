@@ -57,7 +57,55 @@ class Product:
         return total_price
 
 
-# Test cases
+class NonStockedProduct(Product):
+    """A child product class that doesn't require stock tracking like ebooks or licences."""
+
+    def __init__(self, name, price, active=True):
+        self._active = active
+        super().__init__(name, price, quantity=0)
+
+    def set_quantity(self, quantity):
+        """Override to prevent changing quantity."""
+        # Non-stocked products get per default quantity 0 and should not be changed.
+        pass
+
+    def is_active(self):
+        """active status of non-physical products should always be true. But deactivation by
+        shop owner is possible if needed
+        """
+        return self._active
+
+    def buy(self, quantity):
+        # Always allow purchase of a positive amount, but don't change stock quantity
+        if quantity <= 0:
+            raise ValueError("Purchase quantity must be greater than 0.")
+        if not self._active:
+            raise ValueError("product is not active!")
+        return self.price * quantity
+
+    def show(self):
+        return f"{self.name}, Price: ${self.price}, Quantity : Unlimited"
+
+
+class LimitedProduct(Product):
+    """A product child class that can only be bought in limited quantities per order,
+    independent to the amount in stock."""
+
+    def __init__(self, name, price, quantity, maximum):
+        super().__init__(name, price, quantity)
+        self.maximum = maximum
+
+    def buy(self, quantity):
+        if quantity > self.maximum:
+            raise ValueError(f"Cannot buy more than {self.maximum} of this item per order.")
+
+        return super().buy(quantity)
+
+    def show(self):
+        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity} (Limit: {self.maximum} per order)"
+
+
+
 if __name__ == "__main__":
     """This function initializes product instances, and runs the class methods for
     demonstration at the moment. It simulates a purchase,  restock of items and
