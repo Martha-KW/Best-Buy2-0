@@ -12,6 +12,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.active = quantity > 0
+        self.promotion = None
 
     def get_quantity(self):
         """returns the quantity of a product in the stock"""
@@ -27,7 +28,8 @@ class Product:
             self.deactivate()
 
     def is_active(self):
-        "This function gets and returns a value for the question if a product is available."
+        """This function gets and returns a value for the question
+        if a product is available."""
         return self.active
 
     def activate(self):
@@ -40,8 +42,9 @@ class Product:
 
     def show(self):
         """This function returns a f string with information about the product price
-        and product quantity in stock."""
-        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}"
+        and product quantity in stock and if product is in promotion."""
+        promo_str = f" (Promotion: {self.promotion})" if self.promotion else ""
+        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}{promo_str}"
 
     def buy(self, quantity):
         """This function checks if enough items of product are in stock to buy it and can
@@ -51,18 +54,26 @@ class Product:
             raise ValueError("Purchase quantity must be greater than 0.")
         if quantity > self.quantity:
             raise ValueError("Not enough stock available.")
-
-        total_price = self.price * quantity
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = self.price * quantity
         self.set_quantity(self.quantity - quantity)
         return total_price
+
+    def set_promotion(self, promotion):
+        self.promotion = promotion
+
+    def get_promotion(self):
+        return self.promotion
 
 
 class NonStockedProduct(Product):
     """A child product class that doesn't require stock tracking like ebooks or licences."""
 
     def __init__(self, name, price, active=True):
-        self._active = active
         super().__init__(name, price, quantity=0)
+        self._active = active
 
     def set_quantity(self, quantity):
         """Override to prevent changing quantity."""
@@ -81,10 +92,17 @@ class NonStockedProduct(Product):
             raise ValueError("Purchase quantity must be greater than 0.")
         if not self._active:
             raise ValueError("product is not active!")
-        return self.price * quantity
+        if self.promotion:
+            total_price = self.promotion.apply_promotion(self, quantity)
+        else:
+            total_price = self.price * quantity
+
+        return total_price
+
 
     def show(self):
-        return f"{self.name}, Price: ${self.price}, Quantity : Unlimited"
+        promotion_text = f" (Promotion: {self.promotion.name})" if self.promotion else ""
+        return f"{self.name}, Price: ${self.price}, Quantity: Unlimited{promotion_text}"
 
 
 class LimitedProduct(Product):

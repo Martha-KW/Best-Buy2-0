@@ -32,7 +32,7 @@ class Store:
 
     def order(self, shopping_list):
         """
-        This gets a list of tuples consisting of two items: product and quantity. It buys the
+        This gets a list of tuples coåçnsisting of two items: product and quantity. It buys the
         products and returns the total price of the order.
         """
         total_price = 0

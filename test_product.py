@@ -1,5 +1,6 @@
 import pytest
 from products import Product
+from promotions import ThirdOneFree, PercentDiscount, SecondHalfPrice
 
 
 def test_create_valid_product():
@@ -47,3 +48,36 @@ def test_buying_more_than_available_raises_exception():
     p = Product("AirPods", price=200, quantity=2)
     with pytest.raises(ValueError):
         p.buy(3)
+
+
+def test_third_one_free_promotion():
+    product = Product("Bose QC", price=100, quantity=10)
+    promo = ThirdOneFree("Buy 2 get 1")
+    product.set_promotion(promo)
+
+    total = product.buy(3)
+    assert total == 200  # 3 Produkte, 1 gratis → nur 2 werden berechnet
+
+
+def test_percent_discount_promotion():
+    product = Product("Testprodukt", price=200, quantity=5)
+    promo = PercentDiscount("30% off", percent=30)
+    product.set_promotion(promo)
+
+    total = product.buy(2)
+    expected = (200 * 0.7) * 2  # 30% Rabatt auf beide
+    assert total == expected
+
+
+def test_second_half_price_promotion():
+    product = Product("Testprodukt", price=100, quantity=10)
+    promo = SecondHalfPrice("Second item half price")
+    product.set_promotion(promo)
+
+    total = product.buy(2)
+    expected = 100 + 50  # Erstes Produkt voll, zweites 50%
+    assert total == expected
+
+    total = product.buy(3)
+    expected = 100 + 50 + 100  # 2. zum halben Preis, 3. wieder voll
+    assert total == expected
