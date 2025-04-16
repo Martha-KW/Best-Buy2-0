@@ -15,7 +15,6 @@ class Store:
     def __contains__(self, product):
         return product in self.products
 
-
     def add_product(self, product):
         """Adds a product to the inventory."""
         self.products.append(product)
@@ -36,7 +35,7 @@ class Store:
 
     def order(self, shopping_list):
         """
-        This gets a list of tuples coåçnsisting of two items: product and quantity. It buys the
+        This gets a list of tuples consisting of two items: product and quantity. It buys the
         products and returns the total price of the order.
         """
         total_price = 0
@@ -53,7 +52,7 @@ if __name__ == "__main__":
         products.Product(
             "MacBook Air M2", price=1450, quantity=100), products.Product(
             "Bose QuietComfort Earbuds", price=250, quantity=500), products.Product(
-                "Google Pixel 7", price=500, quantity=250), ]
+            "Google Pixel 7", price=500, quantity=250), ]
 
     best_buy = Store(product_list)
     products = best_buy.get_all_products()

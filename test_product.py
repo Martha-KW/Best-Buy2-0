@@ -1,4 +1,5 @@
 import pytest
+
 from products import Product
 from promotions import ThirdOneFree, PercentDiscount, SecondHalfPrice
 from store import Store
@@ -52,39 +53,44 @@ def test_buying_more_than_available_raises_exception():
 
 
 def test_third_one_free_promotion():
+    """This tests if promotion 3rd one free ist working"""
     product = Product("Bose QC", price=100, quantity=10)
     promo = ThirdOneFree("Buy 2 get 1")
     product.set_promotion(promo)
 
     total = product.buy(3)
-    assert total == 200  # 3 Produkte, 1 gratis → nur 2 werden berechnet
+    assert total == 200
 
 
 def test_percent_discount_promotion():
+    """This tests if simple discount by percent value is working"""
     product = Product("Testprodukt", price=200, quantity=5)
     promo = PercentDiscount("30% off", percent=30)
     product.set_promotion(promo)
 
     total = product.buy(2)
-    expected = (200 * 0.7) * 2  # 30% Rabatt auf beide
+    expected = (200 * 0.7) * 2
     assert total == expected
 
 
 def test_second_half_price_promotion():
+    """This tests if you can buy a second product at half price if promoted """
     product = Product("Testprodukt", price=100, quantity=10)
     promo = SecondHalfPrice("Second item half price")
     product.set_promotion(promo)
 
     total = product.buy(2)
-    expected = 100 + 50  # Erstes Produkt voll, zweites 50%
+    expected = 100 + 50
     assert total == expected
 
     total = product.buy(3)
-    expected = 100 + 50 + 100  # 2. zum halben Preis, 3. wieder voll
+    expected = 100 + 50 + 100
     assert total == expected
 
 
 def test_magic_methods():
+    """Tests for the bonus section of magic methods"""
+
     mac = Product("MacBook Air M2", price=1450, quantity=100)
     bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
     pixel = Product("Google Pixel 7", price=500, quantity=250)
@@ -97,7 +103,6 @@ def test_magic_methods():
     # Test comparison
     assert mac > bose
     assert not bose > mac
-
 
     # Test in operator
     assert mac in store

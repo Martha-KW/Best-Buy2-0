@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+
 class Promotion(ABC):
     def __init__(self, name):
         self.name = name
@@ -13,8 +14,8 @@ class Promotion(ABC):
         return self.name
 
 
-
 class PercentDiscount(Promotion):
+    """a child class for classic percentage discount"""
     def __init__(self, name, percent):
         super().__init__(name)
         self.percent = percent
@@ -24,6 +25,7 @@ class PercentDiscount(Promotion):
 
 
 class SecondHalfPrice(Promotion):
+    """a child class that allows to apply the discount only to the second product"""
     def apply_promotion(self, product, quantity):
         half_items = quantity // 2
         full_items = quantity - half_items
@@ -31,6 +33,7 @@ class SecondHalfPrice(Promotion):
 
 
 class ThirdOneFree(Promotion):
+    """a child class to add the third product for free"""
     def apply_promotion(self, product, quantity):
         free_items = quantity // 3
         paid_items = quantity - free_items

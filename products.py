@@ -1,5 +1,5 @@
 class Product:
-    """This class is a blueprint for all products that are sold at best buy store. It holds
+    """This class is a blueprint for all products that are sold at Best Buy store. It holds
     name, price, quantity and availability in stock."""
 
     def __init__(self, name, price, quantity):
@@ -23,7 +23,6 @@ class Product:
         if value < 0:
             raise ValueError("Price must be non-negative.")
         self._price = value
-
 
     def __gt__(self, other):
         """Compares prices of two products"""
@@ -58,14 +57,13 @@ class Product:
         self.active = False
 
     def show(self):
-        """This function returns a f string with information about the product price
+        """This function returns an f string with information about the product price
         and product quantity in stock and if product is in promotion."""
         promo_str = f" (Promotion: {self.promotion})" if self.promotion else ""
         return f"{self.name}, Price: ${self._price}, Quantity: {self.quantity}{promo_str}"
 
     def __str__(self):
         return self.show()
-
 
     def buy(self, quantity):
         """This function checks if enough items of product are in stock to buy it and can
@@ -87,8 +85,6 @@ class Product:
 
     def get_promotion(self):
         return self.promotion
-
-
 
 
 class NonStockedProduct(Product):
@@ -122,7 +118,6 @@ class NonStockedProduct(Product):
 
         return total_price
 
-
     def show(self):
         promotion_text = f" (Promotion: {self.promotion.name})" if self.promotion else ""
         return f"{self.name}, Price: ${self.price}, Quantity: Unlimited{promotion_text}"
@@ -146,8 +141,10 @@ class LimitedProduct(Product):
         return super().buy(quantity)
 
     def show(self):
-        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity} (Limit: {self.maximum} per order)"
-
+        return (
+            f"{self.name}, Price: ${self.price}, Quantity: {self.quantity} "
+            f" Limit: {self.maximum} per order)"
+        )
 
     def __str__(self):
         return self.show()
