@@ -9,10 +9,27 @@ class Product:
                 "must be non-negative.")
 
         self.name = name
-        self.price = price
+        self._price = price
         self.quantity = quantity
         self.active = quantity > 0
         self.promotion = None
+
+    @property
+    def price(self):
+        return self._price
+
+    @price.setter
+    def price(self, value):
+        if value < 0:
+            raise ValueError("Price must be non-negative.")
+        self._price = value
+
+
+    def __gt__(self, other):
+        """Compares prices of two products"""
+        if isinstance(other, Product):
+            return self.price > other.price
+        return NotImplemented
 
     def get_quantity(self):
         """returns the quantity of a product in the stock"""
@@ -44,7 +61,11 @@ class Product:
         """This function returns a f string with information about the product price
         and product quantity in stock and if product is in promotion."""
         promo_str = f" (Promotion: {self.promotion})" if self.promotion else ""
-        return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity}{promo_str}"
+        return f"{self.name}, Price: ${self._price}, Quantity: {self.quantity}{promo_str}"
+
+    def __str__(self):
+        return self.show()
+
 
     def buy(self, quantity):
         """This function checks if enough items of product are in stock to buy it and can
@@ -57,7 +78,7 @@ class Product:
         if self.promotion:
             total_price = self.promotion.apply_promotion(self, quantity)
         else:
-            total_price = self.price * quantity
+            total_price = self._price * quantity
         self.set_quantity(self.quantity - quantity)
         return total_price
 
@@ -66,6 +87,8 @@ class Product:
 
     def get_promotion(self):
         return self.promotion
+
+
 
 
 class NonStockedProduct(Product):
@@ -104,6 +127,9 @@ class NonStockedProduct(Product):
         promotion_text = f" (Promotion: {self.promotion.name})" if self.promotion else ""
         return f"{self.name}, Price: ${self.price}, Quantity: Unlimited{promotion_text}"
 
+    def __str__(self):
+        return self.show()
+
 
 class LimitedProduct(Product):
     """A product child class that can only be bought in limited quantities per order,
@@ -122,6 +148,9 @@ class LimitedProduct(Product):
     def show(self):
         return f"{self.name}, Price: ${self.price}, Quantity: {self.quantity} (Limit: {self.maximum} per order)"
 
+
+    def __str__(self):
+        return self.show()
 
 
 if __name__ == "__main__":

@@ -12,6 +12,10 @@ class Store:
         """Initializes the store with a list of products."""
         self.products = products
 
+    def __contains__(self, product):
+        return product in self.products
+
+
     def add_product(self, product):
         """Adds a product to the inventory."""
         self.products.append(product)

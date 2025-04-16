@@ -1,6 +1,7 @@
 import pytest
 from products import Product
 from promotions import ThirdOneFree, PercentDiscount, SecondHalfPrice
+from store import Store
 
 
 def test_create_valid_product():
@@ -81,3 +82,27 @@ def test_second_half_price_promotion():
     total = product.buy(3)
     expected = 100 + 50 + 100  # 2. zum halben Preis, 3. wieder voll
     assert total == expected
+
+
+def test_magic_methods():
+    mac = Product("MacBook Air M2", price=1450, quantity=100)
+    bose = Product("Bose QuietComfort Earbuds", price=250, quantity=500)
+    pixel = Product("Google Pixel 7", price=500, quantity=250)
+
+    store = Store([mac, bose])
+
+    # Test str method
+    assert str(mac) == "MacBook Air M2, Price: $1450, Quantity: 100"
+
+    # Test comparison
+    assert mac > bose
+    assert not bose > mac
+
+
+    # Test in operator
+    assert mac in store
+    assert pixel not in store
+
+    # Test price setter validation
+    with pytest.raises(ValueError):
+        mac.price = -50
