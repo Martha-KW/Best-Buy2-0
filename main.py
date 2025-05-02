@@ -1,6 +1,7 @@
 import promotions
 import store
 from products import Product, NonStockedProduct, LimitedProduct
+from cart import ShoppingCart
 
 
 def list_products(store):
@@ -76,17 +77,24 @@ def make_order(store):
         print("Product added to list!")
 
     if order_items:
-        total_price = store.order(order_items)
-        print("********")
-        print(f"Order made! Total payment: ${total_price}")
-        print("********")
+
+        cart = ShoppingCart()
+
+        for product, quantity in order_items:
+            cart.add_product(product, quantity)
+
+        print(f"Price with Promotion: {cart.get_total():.2f} $")
+        print(f"Checkout: {cart.checkout():.2f} $")
+
+
+
     else:
         print("No items were ordered.")
 
     return True
 
 
-def quit_best_buy():
+def quit_best_buy(store):
     """This function is the exit door for the shop and interrupts the while True loop."""
     print("Thanks for your visit at Best Buy. Goodbye!")
     return False
