@@ -13,6 +13,8 @@ project was created for educational purpose during studies at masterschool.
 CLI menu.
 - **Unit Tests:** Thorough test coverage using `pytest` for all core components.
 
+- **Shopping Cart introduced:** Promotions are now also applied when products added in
+several CLI operations to the cart.
 ## License
 
 This project is licensed under the MIT License.
