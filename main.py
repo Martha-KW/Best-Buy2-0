@@ -67,6 +67,12 @@ def make_order(store):
 
         amount = int(amount)
 
+        # Check for LimitedProduct maximum
+        if isinstance(selected_product, LimitedProduct) and amount > selected_product.maximum:
+            print(
+                f"Sorry, it is not possible to order more than {selected_product.maximum} of {selected_product.name}.")
+            continue
+
         # skip checking the stock for NonStockedProduct
         if not isinstance(selected_product, NonStockedProduct):
             if selected_product.get_quantity() < amount:
